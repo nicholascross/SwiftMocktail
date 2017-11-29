@@ -1,0 +1,8 @@
+DELETE
+asdfasd/adsfasdf
+200
+application/json
+
+{
+"asdf" : "adsfasd"
+}
