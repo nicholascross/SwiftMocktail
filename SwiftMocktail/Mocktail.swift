@@ -77,15 +77,15 @@ public enum Method: Equatable {
         }
         
         if case .other(let methodLHS) = lhs, case .other(let methodRHS) = rhs {
-            return methodLHS == methodRHS
+            return methodLHS.lowercased() == methodRHS.lowercased()
         }
         
         if case .other(let methodLHS) = lhs, case .httpMethod(let httpMethodRHS) = rhs {
-            return HttpMethod(rawValue: methodLHS) == httpMethodRHS
+            return HttpMethod(rawValue: methodLHS.lowercased()) == httpMethodRHS
         }
         
         if case .httpMethod(let httpMethodLHS) = lhs, case .other(let methodRHS) = rhs {
-            return httpMethodLHS == HttpMethod(rawValue: methodRHS)
+            return httpMethodLHS == HttpMethod(rawValue: methodRHS.lowercased())
         }
         
         return false

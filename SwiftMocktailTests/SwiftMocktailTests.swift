@@ -93,4 +93,10 @@ class MocktailTests: XCTestCase {
         XCTAssertEqual(mocktail.method, .httpMethod(.get))
         XCTAssertEqual(mocktail.responseBody, "")
     }
+    
+    func testMethodComparisonIsCaseInsensitive() {
+        XCTAssertEqual(Method.other("GET"), Method.other("get"))
+        XCTAssertEqual(Method.other("GET"), .httpMethod(.get))
+        XCTAssertEqual(.httpMethod(.get), Method.other("GET"))
+    }
 }
