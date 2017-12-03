@@ -24,10 +24,11 @@ class MocktailTests: XCTestCase {
     }
     
     func testInvalidMethod() {
-        XCTAssertThrowsError(try Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_invalid_method", ofType: "tail")!)) { error in
-            XCTAssertEqual(error as? MocktailError, MocktailError.invalidMethodFormat)
-            
-        }
+        let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_invalid_method", ofType: "tail")!)
+            XCTAssertEqual(mocktail.method, .other("foo"))
+            XCTAssertEqual(mocktail.path, "test/path/expres")
+            XCTAssertEqual(mocktail.responseStatusCode, 200)
+            XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
     }
     
     func testInvalidResponseCode() {
@@ -39,7 +40,7 @@ class MocktailTests: XCTestCase {
     
     func testGetMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_get", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .get)
+        XCTAssertEqual(mocktail.method, .httpMethod(.get))
         XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
@@ -47,7 +48,7 @@ class MocktailTests: XCTestCase {
     
     func testGetHeadersMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_get_more_headers", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .get)
+        XCTAssertEqual(mocktail.method, .httpMethod(.get))
         XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
@@ -58,38 +59,38 @@ class MocktailTests: XCTestCase {
 
     func testPostMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_post", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .post)
+        XCTAssertEqual(mocktail.method, .httpMethod(.post))
     }
 
     func testPutMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_put", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .put)
+        XCTAssertEqual(mocktail.method, .httpMethod(.put))
     }
 
     func testPatchMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_patch", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .patch)
+        XCTAssertEqual(mocktail.method, .httpMethod(.patch))
     }
     
     func testDeleteMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_delete", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .delete)
+        XCTAssertEqual(mocktail.method, .httpMethod(.delete))
     }
 
     
     func testOptionsMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_options", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .options)
+        XCTAssertEqual(mocktail.method, .httpMethod(.options))
     }
     
     func testHeadMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_head", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .head)
+        XCTAssertEqual(mocktail.method, .httpMethod(.head))
     }
     
     func testEmptyGet() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_get_empty", ofType: "tail")!)
-        XCTAssertEqual(mocktail.method, .get)
+        XCTAssertEqual(mocktail.method, .httpMethod(.get))
         XCTAssertEqual(mocktail.responseBody, "")
     }
 }

@@ -3,13 +3,13 @@
 import Foundation
 
 open class Mocktail {
-    public let method: HttpMethod
+    public let method: Method
     public let path: String
     public let responseStatusCode: Int
     public let responseHeaders: [String:String]
     public let responseBody: String
     
-    public init(method: HttpMethod, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
+    public init(method: Method, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
         self.method = method
         self.path = path
         self.responseStatusCode = responseStatusCode
@@ -33,8 +33,13 @@ open class Mocktail {
             throw MocktailError.invalidMocktailFormat
         }
         
-        guard let method: HttpMethod = HttpMethod(rawValue: mocktailComponents[0].lowercased()) else {
-            throw MocktailError.invalidMethodFormat
+        let rawMethod: String = mocktailComponents[0].lowercased()
+        var method: Method!
+        if let httpMethod = HttpMethod(rawValue: rawMethod) {
+            method = .httpMethod(httpMethod)
+        }
+        else {
+            method = .other(rawMethod)
         }
         
         let path: String = mocktailComponents[1]
@@ -62,19 +67,45 @@ open class Mocktail {
     
 }
 
+public enum Method: Equatable {
+    case httpMethod(HttpMethod)
+    case other(String)
+    
+    public static func ==(lhs: Method, rhs: Method) -> Bool {
+        if case .httpMethod(let httpMethodLHS) = lhs, case .httpMethod(let httpMethodRHS) = rhs {
+            return httpMethodLHS == httpMethodRHS
+        }
+        
+        if case .other(let methodLHS) = lhs, case .other(let methodRHS) = rhs {
+            return methodLHS == methodRHS
+        }
+        
+        if case .other(let methodLHS) = lhs, case .httpMethod(let httpMethodRHS) = rhs {
+            return HttpMethod(rawValue: methodLHS) == httpMethodRHS
+        }
+        
+        if case .httpMethod(let httpMethodLHS) = lhs, case .other(let methodRHS) = rhs {
+            return httpMethodLHS == HttpMethod(rawValue: methodRHS)
+        }
+        
+        return false
+    }
+}
+
 public enum HttpMethod: String {
     case options
     case get
     case head
     case post
     case put
-    case patch
     case delete
+    case patch
+    case trace
+    case connect
 }
 
 public enum MocktailError: Error {
     case invalidMocktailFormat
     case invalidHeaderFormat
-    case invalidMethodFormat
     case invalidResponseCodeFormat
 }
