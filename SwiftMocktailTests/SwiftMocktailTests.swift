@@ -40,7 +40,7 @@ class MocktailTests: XCTestCase {
     func testGetMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_get", ofType: "tail")!)
         XCTAssertEqual(mocktail.method, .get)
-        XCTAssertEqual(mocktail.path.pattern, "test/path/expres")
+        XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
     }
@@ -48,7 +48,7 @@ class MocktailTests: XCTestCase {
     func testGetHeadersMethod() {
         let mocktail = try! Mocktail(path: Bundle(for: MocktailTests.self).path(forResource: "test_get_more_headers", ofType: "tail")!)
         XCTAssertEqual(mocktail.method, .get)
-        XCTAssertEqual(mocktail.path.pattern, "test/path/expres")
+        XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
         XCTAssertEqual(mocktail.responseHeaders["token"], "123456")

@@ -4,12 +4,12 @@ import Foundation
 
 open class Mocktail {
     let method: HttpMethod
-    let path: NSRegularExpression
+    let path: String
     let responseStatusCode: Int
     let responseHeaders: [String:String]
     let responseBody: String
     
-    public init(method: HttpMethod, path: NSRegularExpression, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
+    public init(method: HttpMethod, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
         self.method = method
         self.path = path
         self.responseStatusCode = responseStatusCode
@@ -37,9 +37,7 @@ open class Mocktail {
             throw MocktailError.invalidMethodFormat
         }
         
-        guard let path: NSRegularExpression = try? NSRegularExpression(pattern: mocktailComponents[1], options: []) else {
-            throw MocktailError.invalidPathFormat
-        }
+        let path: String = mocktailComponents[1]
         
         guard let responseStatusCode: Int = Int(mocktailComponents[2]) else {
             throw MocktailError.invalidResponseCodeFormat
@@ -59,7 +57,6 @@ open class Mocktail {
             responseHeaders[header] = value
         }
         
-        
         self.init(method: method, path: path, responseStatusCode: responseStatusCode, responseHeaders: responseHeaders, responseBody: responseBody)
     }
     
@@ -78,7 +75,6 @@ public enum HttpMethod: String {
 public enum MocktailError: Error {
     case invalidMocktailFormat
     case invalidHeaderFormat
-    case invalidPathFormat
     case invalidMethodFormat
     case invalidResponseCodeFormat
 }
