@@ -3,11 +3,11 @@
 import Foundation
 
 open class Mocktail {
-    let method: HttpMethod
-    let path: String
-    let responseStatusCode: Int
-    let responseHeaders: [String:String]
-    let responseBody: String
+    public let method: HttpMethod
+    public let path: String
+    public let responseStatusCode: Int
+    public let responseHeaders: [String:String]
+    public let responseBody: String
     
     public init(method: HttpMethod, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
         self.method = method
