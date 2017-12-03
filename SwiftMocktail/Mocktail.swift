@@ -67,7 +67,7 @@ open class Mocktail {
     
 }
 
-public enum Method: Equatable {
+public enum Method: Hashable, Equatable {
     case httpMethod(HttpMethod)
     case other(String)
     
@@ -89,6 +89,13 @@ public enum Method: Equatable {
         }
         
         return false
+    }
+    
+    public var hashValue: Int {
+        switch self {
+            case .httpMethod(let httpMethod): return httpMethod.rawValue.hashValue
+            case .other(let method): return method.lowercased().hashValue
+        }
     }
 }
 
