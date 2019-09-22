@@ -2,7 +2,7 @@
 
 import Foundation
 
-open class Mocktail {
+public struct Mocktail {
     public let method: Method
     public let path: String
     public let responseStatusCode: Int
@@ -17,11 +17,11 @@ open class Mocktail {
         self.responseBody = responseBody
     }
     
-    public convenience init(path: String) throws {
+    public init(path: String) throws {
         try self.init(string: try String(contentsOfFile: path))
     }
     
-    public convenience init(string: String) throws {
+    public init(string: String) throws {
         let components = string.components(separatedBy: "\n\n")
         guard let mocktailComponents = components.first?.components(separatedBy: "\n") else {
                 throw MocktailError.invalidMocktailFormat
@@ -67,7 +67,7 @@ open class Mocktail {
     
 }
 
-public enum Method: Hashable, Equatable {
+public enum Method: Equatable {
     case httpMethod(HttpMethod)
     case other(String)
     
@@ -89,13 +89,6 @@ public enum Method: Hashable, Equatable {
         }
         
         return false
-    }
-    
-    public var hashValue: Int {
-        switch self {
-            case .httpMethod(let httpMethod): return httpMethod.rawValue.hashValue
-            case .other(let method): return method.lowercased().hashValue
-        }
     }
 }
 
