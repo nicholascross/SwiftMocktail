@@ -24,7 +24,7 @@ class MocktailTests: XCTestCase {
     
     func testInvalidMethod() {
         let mocktail = try! Mocktail(stub: "test_invalid_method.tail")
-        XCTAssertEqual(mocktail.method, .other("foo"))
+        XCTAssertEqual(mocktail.method, HttpMethod(method: "foo"))
         XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
@@ -38,7 +38,7 @@ class MocktailTests: XCTestCase {
     
     func testGetMethod() {
         let mocktail = try! Mocktail(stub: "test_get.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.get))
+        XCTAssertEqual(mocktail.method, .get)
         XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
@@ -46,7 +46,7 @@ class MocktailTests: XCTestCase {
     
     func testGetHeadersMethod() {
         let mocktail = try! Mocktail(stub: "test_get_more_headers.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.get))
+        XCTAssertEqual(mocktail.method, .get)
         XCTAssertEqual(mocktail.path, "test/path/expres")
         XCTAssertEqual(mocktail.responseStatusCode, 200)
         XCTAssertEqual(mocktail.responseHeaders["Content-Type"], "application/json")
@@ -57,44 +57,44 @@ class MocktailTests: XCTestCase {
 
     func testPostMethod() {
         let mocktail = try! Mocktail(stub: "test_post.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.post))
+        XCTAssertEqual(mocktail.method, .post)
     }
 
     func testPutMethod() {
         let mocktail = try! Mocktail(stub: "test_put.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.put))
+        XCTAssertEqual(mocktail.method, .put)
     }
 
     func testPatchMethod() {
         let mocktail = try! Mocktail(stub: "test_patch.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.patch))
+        XCTAssertEqual(mocktail.method, .patch)
     }
     
     func testDeleteMethod() {
         let mocktail = try! Mocktail(stub: "test_delete.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.delete))
+        XCTAssertEqual(mocktail.method, .delete)
     }
 
     func testOptionsMethod() {
         let mocktail = try! Mocktail(stub: "test_options.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.options))
+        XCTAssertEqual(mocktail.method, .options)
     }
     
     func testHeadMethod() {
         let mocktail = try! Mocktail(stub:"test_head.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.head))
+        XCTAssertEqual(mocktail.method, .head)
     }
     
     func testEmptyGet() {
         let mocktail = try! Mocktail(stub: "test_get_empty.tail")
-        XCTAssertEqual(mocktail.method, .httpMethod(.get))
+        XCTAssertEqual(mocktail.method, .get)
         XCTAssertEqual(mocktail.responseBody, "")
     }
     
     func testMethodComparisonIsCaseInsensitive() {
-        XCTAssertEqual(Method.other("GET"), Method.other("get"))
-        XCTAssertEqual(Method.other("GET"), .httpMethod(.get))
-        XCTAssertEqual(.httpMethod(.get), Method.other("GET"))
+        XCTAssertEqual(HttpMethod(method: "GET"), HttpMethod(method: "get"))
+        XCTAssertEqual(HttpMethod(method: "GET"), .get)
+        XCTAssertEqual(.get, HttpMethod(method:"GET"))
     }
 }
 
@@ -104,6 +104,7 @@ extension Mocktail {
     }
 
     private static func stubURL(for filename: String) -> String {
+        // The sandbox must be disabled for this to work
         return URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent(filename).path
     }
 }

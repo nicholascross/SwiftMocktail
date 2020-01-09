@@ -3,13 +3,13 @@
 import Foundation
 
 public struct Mocktail {
-    public let method: Method
+    public let method: HttpMethod
     public let path: String
     public let responseStatusCode: Int
     public let responseHeaders: [String:String]
     public let responseBody: String
     
-    public init(method: Method, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
+    public init(method: HttpMethod, path: String, responseStatusCode: Int, responseHeaders: [String:String], responseBody: String) {
         self.method = method
         self.path = path
         self.responseStatusCode = responseStatusCode
@@ -32,16 +32,8 @@ public struct Mocktail {
         guard mocktailComponents.count >= 4 else {
             throw MocktailError.invalidMocktailFormat
         }
-        
-        let rawMethod: String = mocktailComponents[0].lowercased()
-        var method: Method!
-        if let httpMethod = HttpMethod(rawValue: rawMethod) {
-            method = .httpMethod(httpMethod)
-        }
-        else {
-            method = .other(rawMethod)
-        }
-        
+
+        let method: HttpMethod = HttpMethod(method: mocktailComponents[0])
         let path: String = mocktailComponents[1]
         
         guard let responseStatusCode: Int = Int(mocktailComponents[2]) else {
@@ -64,44 +56,28 @@ public struct Mocktail {
         
         self.init(method: method, path: path, responseStatusCode: responseStatusCode, responseHeaders: responseHeaders, responseBody: responseBody)
     }
-    
 }
 
-public enum Method: Equatable {
-    case httpMethod(HttpMethod)
-    case other(String)
-    
-    public static func ==(lhs: Method, rhs: Method) -> Bool {
-        if case .httpMethod(let httpMethodLHS) = lhs, case .httpMethod(let httpMethodRHS) = rhs {
-            return httpMethodLHS == httpMethodRHS
-        }
-        
-        if case .other(let methodLHS) = lhs, case .other(let methodRHS) = rhs {
-            return methodLHS.lowercased() == methodRHS.lowercased()
-        }
-        
-        if case .other(let methodLHS) = lhs, case .httpMethod(let httpMethodRHS) = rhs {
-            return HttpMethod(rawValue: methodLHS.lowercased()) == httpMethodRHS
-        }
-        
-        if case .httpMethod(let httpMethodLHS) = lhs, case .other(let methodRHS) = rhs {
-            return httpMethodLHS == HttpMethod(rawValue: methodRHS.lowercased())
-        }
-        
-        return false
+public struct HttpMethod: CustomStringConvertible, Equatable {
+    var method: String
+
+    public static let options = HttpMethod(method: "options")
+    public static let get = HttpMethod(method: "get")
+    public static let head = HttpMethod(method: "head")
+    public static let post = HttpMethod(method: "post")
+    public static let put = HttpMethod(method: "put")
+    public static let delete = HttpMethod(method: "delete")
+    public static let patch = HttpMethod(method: "patch")
+    public static let trace = HttpMethod(method: "trace")
+    public static let connect = HttpMethod(method: "connect")
+
+    public init(method: String) {
+        self.method = method.lowercased()
     }
-}
 
-public enum HttpMethod: String {
-    case options
-    case get
-    case head
-    case post
-    case put
-    case delete
-    case patch
-    case trace
-    case connect
+    public var description: String {
+        return method
+    }
 }
 
 public enum MocktailError: Error {
@@ -109,3 +85,4 @@ public enum MocktailError: Error {
     case invalidHeaderFormat
     case invalidResponseCodeFormat
 }
+
